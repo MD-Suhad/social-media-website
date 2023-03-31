@@ -1,6 +1,7 @@
 const postsResolvers = require('./post');
 const usersResolvers = require('./users');
 
+
 module.exports ={
  
    Query:{
