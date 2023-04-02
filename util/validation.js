@@ -38,17 +38,14 @@ module.exports.validateRegisterInput = (
 module.exports.validateLoginInput = (
     username,
     password,
-    email
    
 ) =>{
    const errors = {};
-   if(username.trim() ===''){
+   if(username.trim()===''){
       errors.username = "login form username must be taken";
    }
-   if(email.trim() === ""){
-      errors.email = "login from email must be taken";
-   }
-   if(password === ''){
+   
+   if(password.trim()=== ''){
       errors.password = 'valid password must be taken';
    };
    return {

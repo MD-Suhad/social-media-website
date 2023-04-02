@@ -20,6 +20,32 @@ function generateToken(user){
 
 module.exports = {
   Mutation: {
+    async login(
+      _,{username,password}
+   )
+    {
+    const{valid,error} =
+    validateLoginInput(username,password);
+      
+      const user = await User.findOne({ username });
+      if (!user) {
+        throw new UserInputError("User not found",{errors});
+      }
+      const match = await bcrypt.compare(password,user.password);
+      if(!match){
+        error.general = "wrong credentials";
+        throw new UserInputError("wrong credentials",{errors});
+      }
+      
+
+      const token = generateToken(user);
+
+      return {
+        ...user._doc,
+        id: user._id,
+        token,
+      };
+    },
 
     async register(
       _,
@@ -66,35 +92,6 @@ module.exports = {
         token,
       };
     },
-    async login(
-      _,{loginInput:{username,password}}
-    )
-    {
-      const{valid,error} = validateLoginInput(username,password);
-      if(!valid){
-        throw UserInputError("loginUserError",{error});
-      }
-      const user = await User.findOne({ username });
-      if (!user) {
-        throw new UserInputError("Wrong credentials",{errors});
-      }
-      const match = await bcrypt.compare(password,user.password);
-      if(!match){
-        error.general = "wrong credentials";
-        throw new UserInputError("wrong credentials",{errors});
-      }
-      const newUser =  User({
-        email,
-        username,
-        password,
-        createAt: new Date().toISOString(),
-      });
-      const token = generateToken(User);
-      return {
-        ...User._doc,
-        id: User._id,
-        token,
-      };
-    }
+    
   },
 };
